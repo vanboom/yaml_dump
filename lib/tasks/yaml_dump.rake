@@ -10,9 +10,9 @@ namespace :yaml_dump do
       i = "000"
       data = ActiveRecord::Base.connection.select_all(sql % table_name)
       if data.count > 0
-        filename = "%s/spec/fixtures/%s.yml" % [Rails.root, table_name]
+        filename = "%s/fixture_dump/%s.yml" % [Rails.root, table_name]
         File.open(filename, 'w') do |file|
-          puts "Writing ./spec/fixtures/%s.yml with [%d] rows." % [table_name, data.count]
+          puts "Writing ./fixture_dump/%s.yml with [%d] rows." % [table_name, data.count]
           file.write data.inject({}) { |hash, record|
             hash["#{table_name}_#{i.succ!}"] = record
             hash
