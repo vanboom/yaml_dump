@@ -3,6 +3,7 @@ namespace :yaml_dump do
 
   desc 'Create YAML test fixtures from data in an existing database. Defaults to development database.  Set RAILS_ENV to override.'
   task :dump => :environment do
+    Dir.mkdir("tmp/fixtures") unless Dir.exists?("tmp/fixtures")
     sql  = "SELECT * FROM %s"
     skip_tables = ["schema_info","schema_migrations"]
     ActiveRecord::Base.establish_connection
@@ -10,9 +11,9 @@ namespace :yaml_dump do
       i = "000"
       data = ActiveRecord::Base.connection.select_all(sql % table_name)
       if data.count > 0
-        filename = "%s/fixture_dump/%s.yml" % [Rails.root, table_name]
+        filename = "%s/tmp/fixtures/%s.yml" % [Rails.root, table_name]
         File.open(filename, 'w') do |file|
-          puts "Writing ./fixture_dump/%s.yml with [%d] rows." % [table_name, data.count]
+          puts "Writing ./tmp/fixtures/%s.yml with [%d] rows." % [table_name, data.count]
           file.write data.inject({}) { |hash, record|
             hash["#{table_name}_#{i.succ!}"] = record
             hash
