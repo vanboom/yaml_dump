@@ -13,5 +13,5 @@ Usage
     rake yaml_dump:dump 
   
   
-All yml files will be written to the spec/fixtures directory.  Existing files will be overwritten.
+All yml files will be written to the tmp/fixtures directory.  Existing files will be overwritten.
 
