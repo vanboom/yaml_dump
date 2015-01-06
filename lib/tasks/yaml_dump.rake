@@ -15,8 +15,9 @@ namespace :yaml_dump do
         File.open(filename, 'w') do |file|
           puts "Writing ./tmp/fixtures/%s.yml with [%d] rows." % [table_name, data.count]
           file.write data.inject({}) { |hash, record|
-            # reject the id from the hash
-            record.extract!('id')
+            # excluded attributes
+            h = ["id","created_at","updated_at"]
+            record.except!(*h)
             hash["#{table_name}_#{i.succ!}"] = record
             hash
           }.to_yaml
