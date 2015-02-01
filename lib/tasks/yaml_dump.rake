@@ -2,7 +2,8 @@ namespace :yaml_dump do
   desc "Dump the database to a .yaml file using YAML"
 
   desc 'Create YAML test fixtures from data in an existing database. Defaults to development database.  Set RAILS_ENV to override.'
-  task :dump => :environment do
+  task :dump, [:excluded]=>[:environment] do |t,args|
+    args ||= ["id", "created_at", "updated_at"]
     Dir.mkdir("tmp/fixtures") unless Dir.exists?("tmp/fixtures")
     sql  = "SELECT * FROM %s"
     skip_tables = ["schema_info","schema_migrations"]
@@ -16,8 +17,7 @@ namespace :yaml_dump do
           puts "Writing ./tmp/fixtures/%s.yml with [%d] rows." % [table_name, data.count]
           file.write data.inject({}) { |hash, record|
             # excluded attributes
-            h = ["id","created_at","updated_at"]
-            record.except!(*h)
+            record.except!(*args)
             hash["#{table_name}_#{i.succ!}"] = record
             hash
           }.to_yaml
